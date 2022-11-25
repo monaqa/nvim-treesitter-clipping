@@ -3,6 +3,7 @@ local parsers = require "vim.treesitter"
 local M = {}
 
 ---現在のカーソル位置にあり、切り出せそうなところを新しいバッファに切り取る。
+---切り出せそうなところは clipping.scm の @clip でキャプチャされたところ。
 ---@param bufnr? number
 function M.clip(bufnr)
     -- LanguageTree object
@@ -14,17 +15,20 @@ function M.clip(bufnr)
     local row_cursor = cursor[2]
 
     local query = vim.treesitter.get_query(lang, "clipping")
+    vim.pretty_print { query = query, tree = tree:root() }
     for pattern, match, metadata in query:iter_matches(tree:root(), bufnr) do
         local range
         local filetype
-        vim.pretty_print { metadata = metadata }
+        local prefix
+        local auto_prefix
+        local prefix_pattern
 
         for id, node in pairs(match) do
             local name = query.captures[id]
             -- `node` was captured by the `name` capture in the match
             if name == "clip" then
                 local metadata_match = metadata[id]
-                if metadata_match.range ~= nil then
+                if metadata_match ~= nil and metadata_match.range ~= nil then
                     range = metadata_match.range
                 else
                     range = { node:range() }
@@ -32,6 +36,9 @@ function M.clip(bufnr)
                 if metadata.filetype ~= nil then
                     filetype = metadata.filetype
                 end
+                -- prefix = metadata.prefix
+                -- auto_prefix = metadata.auto_prefix
+                -- prefix_pattern = metadata.prefix_pattern
             elseif name == "filetype" then
                 filetype = vim.treesitter.get_node_text(node, bufnr or 0, {})
             end
@@ -46,37 +53,20 @@ function M.clip(bufnr)
             local srow = range[1]
             local erow = range[3]
 
-            vim.pretty_print {
-                row_cursor = row_cursor,
-                range = { srow, erow },
-                filetype = filetype,
-            }
-
             if srow + 1 <= row_cursor and row_cursor <= erow then
                 vim.fn["partedit#start"](srow + 1, erow, {
                     filetype = filetype,
+                    prefix = prefix,
+                    auto_prefix = auto_prefix,
+                    prefix_pattern = prefix_pattern,
                 })
                 break
             end
         end
-        -- for id, node in pairs(match) do
-        --     local name = query.captures[id]
-        --     -- `node` was captured by the `name` capture in the match
-        --
-        --     local node_data = metadata[id] -- Node level metadata
-        --
-        --     vim.pretty_print {
-        --         id = id,
-        --         name = name,
-        --         node = node,
-        --     }
-        -- end
     end
 end
 
-function M.attach(bufnr, lang)
-    -- TODO: Fill this with what you need to do when attaching to a buffer
-end
+function M.attach(bufnr, lang) end
 
 function M.detach(bufnr)
     -- TODO: Fill this with what you need to do when detaching from a buffer
