@@ -7,6 +7,11 @@ local M = {}
 ---@param bufnr? number
 function M.clip(bufnr)
     -- LanguageTree object
+
+    if bufnr == nil then
+        bufnr = 0
+    end
+
     local tsparser = parsers.get_parser(bufnr)
     local lang = tsparser:lang()
     local tree = tsparser:parse()[1]
@@ -15,7 +20,7 @@ function M.clip(bufnr)
     local row_cursor = cursor[2]
 
     local query = vim.treesitter.get_query(lang, "clipping")
-    vim.pretty_print { query = query, tree = tree:root() }
+
     for pattern, match, metadata in query:iter_matches(tree:root(), bufnr) do
         local range
         local filetype
