@@ -1,6 +1,5 @@
 local parsers = require "vim.treesitter"
 local tsutils = require "nvim-treesitter.ts_utils"
-local ts_query = require "nvim-treesitter.query"
 
 local M = {}
 
@@ -58,6 +57,9 @@ local function get_code_ranges(bufnr)
     local tree = tsparser:parse()[1]
 
     local query = vim.treesitter.get_query(lang, "clipping")
+    if query == nil then
+        return {}
+    end
 
     local clip_captures = {}
     local clip_seq_captures = {}
