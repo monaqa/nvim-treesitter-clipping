@@ -1,5 +1,6 @@
 local parsers = require "vim.treesitter"
 local tsutils = require "nvim-treesitter.ts_utils"
+local ts_query = require "nvim-treesitter.query"
 
 local M = {}
 
@@ -61,7 +62,7 @@ local function get_code_ranges(bufnr)
     local clip_captures = {}
     local clip_seq_captures = {}
 
-    for pattern, match, metadata in query:iter_matches(tree:root(), bufnr) do
+    for pattern_id, match, metadata in query:iter_matches(tree:root(), bufnr) do
         ---@type "clip" | "clip_seq" | nil
         local kind
         local range
@@ -93,7 +94,7 @@ local function get_code_ranges(bufnr)
         local capture_info = {
             from = range[1] + 1,
             to = range[3] + 1,
-            pattern_id = pattern,
+            pattern_id = pattern_id,
             filetype = filetype,
             prefix = prefix,
             auto_prefix = auto_prefix,
@@ -108,7 +109,6 @@ local function get_code_ranges(bufnr)
     end
 
     local merged_clip_seq_captures = merge_clip_seq(clip_seq_captures)
-    -- vim.pretty_print { clip_seq_captures = clip_seq_captures, merged_clip_seq_captures = merged_clip_seq_captures }
     vim.list_extend(clip_captures, merged_clip_seq_captures)
 
     -- 開始が早い順・パターン ID の若い順にソート
@@ -133,7 +133,7 @@ function M.clip(bufnr)
     -- LanguageTree object
 
     if bufnr == nil then
-        bufnr = 0
+        bufnr = vim.fn.bufnr()
     end
 
     local cursor = vim.fn.getcurpos()
@@ -156,8 +156,6 @@ end
 
 function M.attach(bufnr, lang) end
 
-function M.detach(bufnr)
-    -- TODO: Fill this with what you need to do when detaching from a buffer
-end
+function M.detach(bufnr) end
 
 return M

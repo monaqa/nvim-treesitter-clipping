@@ -3,7 +3,7 @@
   (block
     (expression_statement
       (string) @clip
-      (#offset! @clip 1 0 0 0)
+      (#offset! @clip 1 0 -1 0)
       )
     )
   (#set! "filetype" "markdown")
@@ -14,7 +14,7 @@
   (block
     (expression_statement
       (string) @clip
-      (#offset! @clip 1 0 0 0)
+      (#offset! @clip 1 0 -1 0)
       )
     )
   (#set! "filetype" "markdown")

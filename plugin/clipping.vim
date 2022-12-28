@@ -1,1 +1,1 @@
-lua require("clipping").init()
+lua require("nvim-treesitter-clipping").init()
