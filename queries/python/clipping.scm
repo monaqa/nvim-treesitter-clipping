@@ -3,7 +3,7 @@
   (block
     (expression_statement
       (string) @clip
-      (#offset! @clip 1 0 -1 0)
+      (#set! "exclude_bounds" "both")
       )
     )
   (#set! "filetype" "markdown")
@@ -14,8 +14,13 @@
   (block
     (expression_statement
       (string) @clip
-      (#offset! @clip 1 0 -1 0)
+      (#set! "exclude_bounds" "both")
       )
     )
   (#set! "filetype" "markdown")
   )
+
+(
+ (comment) @clip_group
+ (#set! "prefix_pattern" "\\s*#\\s*")
+ )

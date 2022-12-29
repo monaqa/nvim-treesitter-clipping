@@ -4,10 +4,10 @@
     (language) @filetype
     )
   (code_fence_content) @clip
-  (#offset! @clip 0 0 -1 0)
+  (#set! "exclude_bounds" "end")
   )
 
 (
  (code_fence_content) @clip
-  (#offset! @clip 0 0 -1 0)
+  (#set! "exclude_bounds" "end")
  )

@@ -96,14 +96,18 @@ local function get_code_ranges(bufnr)
 
         vim.pretty_print { range = range, exclude_bounds = exclude_bounds }
 
-        local offset = 0
-        if exclude_bounds == "true" then
-            offset = 1
+        local offset_start = 0
+        local offset_end = 0
+        if exclude_bounds == "start" or exclude_bounds == "both" then
+            offset_start = 1
+        end
+        if exclude_bounds == "end" or exclude_bounds == "both" then
+            offset_end = 1
         end
 
         local capture_info = {
-            from = range[1] + 1 + offset,
-            to = range[3] + 1 - offset,
+            from = range[1] + 1 + offset_start,
+            to = range[3] + 1 - offset_end,
             pattern_id = pattern_id,
             filetype = filetype,
             prefix = prefix,
