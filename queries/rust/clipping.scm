@@ -1,20 +1,20 @@
 (
- (line_comment) @clip_seq
- (#match? @clip_seq "^///.*$")
+ (line_comment) @clip_group
+ (#match? @clip_group "^///.*$")
  (#set! "filetype" "markdown")
  (#set! "prefix_pattern" "\\s*///\\s*")
  )
 
 (
- (line_comment) @clip_seq
- (#match? @clip_seq "^//!.*$")
+ (line_comment) @clip_group
+ (#match? @clip_group "^//!.*$")
  (#set! "filetype" "markdown")
  (#set! "prefix_pattern" "\\s*//!\\s*")
  )
 
 (
- (line_comment) @clip_seq
- (#match? @clip_seq "^//[^/].*$")
+ (line_comment) @clip_group
+ (#match? @clip_group "^//[^/].*$")
  (#set! "prefix_pattern" "\\s*//\\s*")
  )
 

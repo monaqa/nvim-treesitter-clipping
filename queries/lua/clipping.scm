@@ -9,7 +9,7 @@
   (#eq? @funcname "vim.cmd")
   (#match? @clip "^\\[")  ; enable only [[ .. ]] string
   (#set! "filetype" "vim")
-  (#offset! @clip 1 0 -1 0)
+  (#set! "exclude_bounds" "true")
   )
 
 ; some_func [[
@@ -19,11 +19,12 @@
   name: (_)
   arguments: (arguments (string) @clip)
   (#match? @clip "^\\[")
-  (#offset! @clip 1 0 -1 0)
+  (#set! "exclude_bounds" "true")
+  ; (#offset! @clip 1 0 -1 0)
   )
 
 ; comment lines
 (
- (comment) @clip_seq
+ (comment) @clip_group
  (#set! "prefix_pattern" "\\s*---\\?\\s*")
  )

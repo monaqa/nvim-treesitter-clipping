@@ -6,12 +6,12 @@ local M = {}
 ---@alias parteditargs {from: integer, to: integer, pattern_id: integer, filetype?: string, prefix?: string, auto_prefix?: string, prefix_pattern?: string}
 
 ---range の列を受け取り、隣接している range をいい感じにマージする。
----@param clip_seq {from: integer, to: integer, pattern_id: integer}[]
+---@param clip_group {from: integer, to: integer, pattern_id: integer}[]
 ---@return {from: integer, to: integer, pattern_id: integer}[]
-local function merge_clip_seq(clip_seq)
+local function merge_clip_group(clip_group)
     -- パターン ID が異なるものはマージできないため
     -- パターン ID の若い順・開始が早い順にソート
-    table.sort(clip_seq, function(clip1, clip2)
+    table.sort(clip_group, function(clip1, clip2)
         if clip1.pattern_id == clip2.pattern_id then
             return clip1.from < clip2.from
         else
@@ -21,7 +21,7 @@ local function merge_clip_seq(clip_seq)
 
     local lst = {}
     local tmp
-    for _, clip in ipairs(clip_seq) do
+    for _, clip in ipairs(clip_group) do
         if tmp == nil then
             tmp = clip
         else
@@ -44,7 +44,7 @@ end
 ---partedit 可能な箇所のリストを返す。
 ---partedit 可能な箇所は query にマッチする箇所として判定する。具体的には
 ---`@clip`: partedit 可能な node をキャプチャする
----`@clip_seq`: partedit 可能な node の一部をキャプチャする（連続したら連ねる）
+---`@clip_group`: partedit 可能な node の一部をキャプチャする（連続したら連ねる）
 ---@param bufnr integer
 ---@return parteditargs[]
 local function get_code_ranges(bufnr)
@@ -62,10 +62,10 @@ local function get_code_ranges(bufnr)
     end
 
     local clip_captures = {}
-    local clip_seq_captures = {}
+    local clip_group = {}
 
     for pattern_id, match, metadata in query:iter_matches(tree:root(), bufnr) do
-        ---@type "clip" | "clip_seq" | nil
+        ---@type "clip" | "clip_group" | nil
         local kind
         local range
         local filetype
@@ -76,11 +76,12 @@ local function get_code_ranges(bufnr)
         local prefix = metadata.prefix
         local auto_prefix = metadata.auto_prefix
         local prefix_pattern = metadata.prefix_pattern
+        local exclude_bounds = metadata.exclude_bounds
 
         for id, node in pairs(match) do
             local name = query.captures[id]
             -- `node` was captured by the `name` capture in the match
-            if name == "clip" or name == "clip_seq" then
+            if name == "clip" or name == "clip_group" then
                 kind = name
                 local metadata_match = metadata[id]
                 if metadata_match ~= nil and metadata_match.range ~= nil then
@@ -93,9 +94,16 @@ local function get_code_ranges(bufnr)
             end
         end
 
+        vim.pretty_print { range = range, exclude_bounds = exclude_bounds }
+
+        local offset = 0
+        if exclude_bounds == "true" then
+            offset = 1
+        end
+
         local capture_info = {
-            from = range[1] + 1,
-            to = range[3] + 1,
+            from = range[1] + 1 + offset,
+            to = range[3] + 1 - offset,
             pattern_id = pattern_id,
             filetype = filetype,
             prefix = prefix,
@@ -105,13 +113,13 @@ local function get_code_ranges(bufnr)
 
         if kind == "clip" then
             clip_captures[#clip_captures + 1] = capture_info
-        elseif kind == "clip_seq" then
-            clip_seq_captures[#clip_seq_captures + 1] = capture_info
+        elseif kind == "clip_group" then
+            clip_group[#clip_group + 1] = capture_info
         end
     end
 
-    local merged_clip_seq_captures = merge_clip_seq(clip_seq_captures)
-    vim.list_extend(clip_captures, merged_clip_seq_captures)
+    local merged_clip_group = merge_clip_group(clip_group)
+    vim.list_extend(clip_captures, merged_clip_group)
 
     -- 開始が早い順・パターン ID の若い順にソート
     table.sort(clip_captures, function(clip1, clip2)
@@ -156,7 +164,7 @@ function M.clip(bufnr)
     end
 end
 
-function M.attach(bufnr, lang) end
+function M.attach(_bufnr, lang) end
 
 function M.detach(bufnr) end
 
