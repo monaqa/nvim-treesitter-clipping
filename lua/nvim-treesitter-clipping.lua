@@ -4,7 +4,7 @@ local M = {}
 
 function M.init()
     require("nvim-treesitter").define_modules {
-        module_template = {
+        clipping = {
             module_path = "nvim-treesitter-clipping.internal",
             is_supported = function(lang)
                 return queries.get_query(lang, "clipping") ~= nil
