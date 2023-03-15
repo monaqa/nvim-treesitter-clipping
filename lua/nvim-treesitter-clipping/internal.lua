@@ -94,8 +94,6 @@ local function get_code_ranges(bufnr)
             end
         end
 
-        vim.pretty_print { range = range, exclude_bounds = exclude_bounds }
-
         local offset_start = 0
         local offset_end = 0
         if exclude_bounds == "start" or exclude_bounds == "both" then
