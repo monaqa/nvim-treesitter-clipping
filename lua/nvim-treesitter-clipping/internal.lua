@@ -166,6 +166,38 @@ function M.clip(bufnr)
     end
 end
 
+local function select_in_visual_mode(from, to)
+    if vim.fn.mode() ~= "V" then
+        vim.cmd.normal "V"
+    end
+    vim.fn.cursor { from, 1 }
+    vim.cmd.normal "o"
+    vim.fn.cursor { to, 1 }
+end
+
+---現在のカーソル位置にあり、切り出せそうなところを選択する。
+---切り出せそうなところは clipping.scm の @clip でキャプチャされたところ。
+---@param bufnr? number
+function M.select(bufnr)
+    -- LanguageTree object
+
+    if bufnr == nil then
+        bufnr = vim.fn.bufnr()
+    end
+
+    local cursor = vim.fn.getcurpos()
+    local row_cursor = cursor[2]
+
+    local code_ranges = M.get_code_ranges(bufnr)
+
+    for _, d in ipairs(code_ranges) do
+        if d.from <= row_cursor and row_cursor <= d.to then
+            select_in_visual_mode(d.from, d.to)
+            return
+        end
+    end
+end
+
 function M.attach(_bufnr, lang) end
 
 function M.detach(bufnr) end
