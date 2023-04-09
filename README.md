@@ -14,6 +14,7 @@ For example:
 
 ```lua
 vim.keymap.set("n", "<Space>c", "<Plug>(ts-clipping-clip)")
+vim.keymap.set({"x", "o"}, "<Space>c", "<Plug>(ts-clipping-select)")
 ```
 
 Press `<Space>c` on
@@ -31,3 +32,4 @@ and see what happens.
 - [x] Markdown
 - [x] Python
 - [x] Rust
+- [x] Toml
