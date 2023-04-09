@@ -7,7 +7,7 @@ function M.init()
         clipping = {
             module_path = "nvim-treesitter-clipping.internal",
             is_supported = function(lang)
-                return queries.get_query(lang, "clipping") ~= nil
+                return vim.treesitter.query.get(lang, "clipping") ~= nil
             end,
         },
     }

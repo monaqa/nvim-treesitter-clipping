@@ -56,7 +56,7 @@ local function get_code_ranges(bufnr)
     local lang = tsparser:lang()
     local tree = tsparser:parse()[1]
 
-    local query = vim.treesitter.get_query(lang, "clipping")
+    local query = vim.treesitter.query.get(lang, "clipping")
     if query == nil then
         return {}
     end
