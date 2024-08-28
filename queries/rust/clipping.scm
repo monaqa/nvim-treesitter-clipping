@@ -21,3 +21,9 @@
  (#set! "filetype" "markdown")
  (#set! "prefix_pattern" "\\s*//!\\s*")
  )
+
+(
+ (line_comment) @clip_group
+ (#set! "filetype" "markdown")
+ (#set! "prefix_pattern" "\\s*//\\s*")
+ )
