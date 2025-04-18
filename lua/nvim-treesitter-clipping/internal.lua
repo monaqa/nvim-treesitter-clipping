@@ -1,5 +1,5 @@
-local parsers = require "vim.treesitter"
-local tsutils = require "nvim-treesitter.ts_utils"
+local parsers = require("vim.treesitter")
+local tsutils = require("nvim-treesitter.ts_utils")
 
 local M = {}
 
@@ -78,7 +78,9 @@ local function get_code_ranges(bufnr)
         local prefix_pattern = metadata.prefix_pattern
         local exclude_bounds = metadata.exclude_bounds
 
-        for id, node in pairs(match) do
+        for id, nodes in pairs(match) do
+            -- TODO: 一旦マッチした最初のノードのみ取る。本当は node ごとに iterate すべき
+            local node = nodes[1]
             local name = query.captures[id]
             -- `node` was captured by the `name` capture in the match
             if name == "clip" or name == "clip_group" then
@@ -168,10 +170,10 @@ end
 
 local function select_in_visual_mode(from, to)
     if vim.fn.mode() ~= "V" then
-        vim.cmd.normal "V"
+        vim.cmd.normal("V")
     end
     vim.fn.cursor { from, 1 }
-    vim.cmd.normal "o"
+    vim.cmd.normal("o")
     vim.fn.cursor { to, 1 }
 end
 
