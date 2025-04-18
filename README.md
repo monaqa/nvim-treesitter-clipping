@@ -4,7 +4,7 @@ This plugin uses [vim-partedit](https://github.com/thinca/vim-partedit).
 
 ## Requirements
 
-* Neovim **>= 0.9.0**
+* Neovim **>= 0.11.0**
 * [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 * [vim-partedit](https://github.com/thinca/vim-partedit)
 
