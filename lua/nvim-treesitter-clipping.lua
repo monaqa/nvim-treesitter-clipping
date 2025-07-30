@@ -1,16 +1,14 @@
-local queries = require "nvim-treesitter.query"
-
 local M = {}
 
 function M.init()
-    require("nvim-treesitter").define_modules {
-        clipping = {
-            module_path = "nvim-treesitter-clipping.internal",
-            is_supported = function(lang)
-                return vim.treesitter.query.get(lang, "clipping") ~= nil
-            end,
-        },
-    }
+    -- require("nvim-treesitter").define_modules {
+    --     clipping = {
+    --         module_path = "nvim-treesitter-clipping.internal",
+    --         is_supported = function(lang)
+    --             return vim.treesitter.query.get(lang, "clipping") ~= nil
+    --         end,
+    --     },
+    -- }
 
     vim.keymap.set("n", "<Plug>(ts-clipping-clip)", function()
         require("nvim-treesitter-clipping.internal").clip()

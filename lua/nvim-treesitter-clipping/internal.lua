@@ -1,5 +1,4 @@
 local parsers = require("vim.treesitter")
-local tsutils = require("nvim-treesitter.ts_utils")
 
 local M = {}
 
@@ -47,7 +46,7 @@ end
 ---`@clip_group`: partedit 可能な node の一部をキャプチャする（連続したら連ねる）
 ---@param bufnr integer
 ---@return parteditargs[]
-local function get_code_ranges(bufnr)
+function M.get_code_ranges(bufnr)
     if bufnr == nil then
         bufnr = 0
     end
@@ -137,9 +136,6 @@ local function get_code_ranges(bufnr)
     return clip_captures
 end
 
----@type fun(bufnr): parteditargs[]
-M.get_code_ranges = tsutils.memoize_by_buf_tick(get_code_ranges)
-
 ---現在のカーソル位置にあり、切り出せそうなところを新しいバッファに切り取る。
 ---切り出せそうなところは clipping.scm の @clip でキャプチャされたところ。
 ---@param bufnr? number
@@ -199,9 +195,5 @@ function M.select(bufnr)
         end
     end
 end
-
-function M.attach(_bufnr, lang) end
-
-function M.detach(bufnr) end
 
 return M
